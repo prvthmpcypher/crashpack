@@ -21,12 +21,24 @@
     "README.md",
     "LICENSE"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/prvthmpcypher/crashpack.git"
+  },
+  "homepage": "https://github.com/prvthmpcypher/crashpack#readme",
+  "bugs": {
+    "url": "https://github.com/prvthmpcypher/crashpack/issues"
+  },
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
     "test": "vitest run",
     "test:watch": "vitest",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "prepack": "tsup"
   },
   "keywords": [
     "crashpack",
