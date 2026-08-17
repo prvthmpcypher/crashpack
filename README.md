@@ -168,6 +168,14 @@ npm run build
 
 ---
 
+## Community & Security
+
+- [Code of Conduct](CODE_OF_CONDUCT.md)
+- [Security Policy](SECURITY.md)
+- [Contributing Guide](CONTRIBUTING.md)
+
+---
+
 ## License
 
 [MIT](LICENSE) © [Poorvith M P](https://github.com/prvthmpcypher)
