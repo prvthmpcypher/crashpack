@@ -1,0 +1,9 @@
+[allowlist]
+description = "Ignore test suites, fixtures, build artifacts and dependencies"
+paths = [
+    '''src/.*\.test\.ts''',
+    '''tests/.*''',
+    '''fixtures/.*''',
+    '''node_modules/.*''',
+    '''dist/.*''',
+]

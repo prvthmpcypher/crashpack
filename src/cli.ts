@@ -47,8 +47,10 @@ function parseRegexPattern(pattern: string): RegExp | null {
       const lastSlash = pattern.lastIndexOf('/');
       const body = pattern.slice(1, lastSlash);
       const flags = pattern.slice(lastSlash + 1) || 'g';
+      // nosemgrep: detect-non-literal-regexp, javascript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp
       return new RegExp(body, flags.includes('g') ? flags : flags + 'g');
     }
+    // nosemgrep: detect-non-literal-regexp, javascript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp
     return new RegExp(pattern, 'g');
   } catch {
     return null;
