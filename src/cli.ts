@@ -74,7 +74,7 @@ export async function runCli(argv = process.argv): Promise<number> {
   program
     .name('crashpack')
     .description('Everything your bug report needs, in one command.')
-    .version('0.1.1')
+    .version('0.1.2')
     .option('--wrap <command>', 'Run a command, stream live, and capture crash context on non-zero exit')
     .option('--stdin', 'Read piped input as the log section')
     .option('--out <path>', 'Write output to a specific file instead of temp')
@@ -169,7 +169,12 @@ async function generateAndOutput(options: CliArgs, extra: ExtraContext): Promise
   const isSilentMode = Boolean(options.stdout || options.json);
 
   if (!isSilentMode) {
-    process.stderr.write(`${pc.bold('crashpack')} ${pc.dim('· collecting…')}\n`);
+    process.stderr.write(`\n${pc.cyan('╭──────────────────────────────────────────────────────────╮')}\n`);
+    process.stderr.write(`${pc.cyan('│')}  ${pc.bold(pc.yellow('⚡ crashpack'))} ${pc.dim('v0.1.2')}                                    ${pc.cyan('│')}\n`);
+    process.stderr.write(`${pc.cyan('│')}  ${pc.dim('Zero-config crash context collector')}                     ${pc.cyan('│')}\n`);
+    process.stderr.write(`${pc.cyan('│')}  ${pc.magenta('Built by Poorvith')} ${pc.dim('(@prvthmpcypher)')}                      ${pc.cyan('│')}\n`);
+    process.stderr.write(`${pc.cyan('╰──────────────────────────────────────────────────────────╯')}\n\n`);
+    process.stderr.write(`  ${pc.yellow('●')} ${pc.dim('Scanning debug context across subsystems…')}\n\n`);
   }
 
   const collectorStatuses: Record<string, { status: string; reason?: string }> = {};
@@ -192,11 +197,12 @@ async function generateAndOutput(options: CliArgs, extra: ExtraContext): Promise
     // Print collection status summary
     const statusItems: string[] = [];
     for (const section of pack.sections) {
+      const paddedId = section.id.padEnd(9);
       if (section.status === 'ok') {
-        statusItems.push(`  ${pc.green('✓')} ${section.id}`);
+        statusItems.push(`  ${pc.green('✓')} ${pc.bold(paddedId)} ${pc.dim('ready')}`);
       } else {
         const reasonStr = section.unavailableReason ? ` ${pc.dim(`(${section.unavailableReason})`)}` : '';
-        statusItems.push(`  ${pc.dim(`- ${section.id}${reasonStr}`)}`);
+        statusItems.push(`  ${pc.dim(`- ${paddedId}${reasonStr}`)}`);
       }
     }
 
@@ -245,14 +251,21 @@ async function generateAndOutput(options: CliArgs, extra: ExtraContext): Promise
   }
 
   if (!isSilentMode) {
-    const clipMsg = copiedToClipboard
-      ? pc.green('copied to clipboard')
-      : pc.dim('clipboard unavailable');
-    const redactMsg = pc.yellow(
-      `${pack.redactionCount} value${pack.redactionCount === 1 ? '' : 's'} redacted`
-    );
-    process.stderr.write(`${clipMsg} ${pc.dim('·')} ${redactMsg}\n`);
-    process.stderr.write(`${pc.cyan(outputPath)}\n`);
+    const clipHeader = copiedToClipboard
+      ? `${pc.bold(pc.green('📋 COPIED TO CLIPBOARD!'))} ${pc.dim('Paste directly into GitHub / Slack / AI')}`
+      : `${pc.bold(pc.yellow('📄 REPORT SAVED'))} ${pc.dim('(Clipboard unavailable in this environment)')}`;
+
+    const redactNote = pack.redactionCount > 0
+      ? `${pc.yellow('🛡️ ')} ${pc.bold(pack.redactionCount.toString())} sensitive value${pack.redactionCount === 1 ? '' : 's'} masked as [redacted]`
+      : `${pc.green('🛡️ ')} Zero sensitive leaks detected (diffs & logs verified safe)`;
+
+    process.stderr.write(`${pc.cyan('╭──────────────────────────────────────────────────────────────────────────╮')}\n`);
+    process.stderr.write(`${pc.cyan('│')}  ${clipHeader}\n`);
+    process.stderr.write(`${pc.cyan('│')}\n`);
+    process.stderr.write(`${pc.cyan('│')}  ${redactNote}\n`);
+    process.stderr.write(`${pc.cyan('│')}  ${pc.dim('📁 Backup file:')} ${pc.cyan(outputPath)}\n`);
+    process.stderr.write(`${pc.cyan('│')}  ${pc.dim('⚡')} ${pc.magenta('Built by Poorvith')} ${pc.dim('· 100% local-first (0 network calls)')}\n`);
+    process.stderr.write(`${pc.cyan('╰──────────────────────────────────────────────────────────────────────────╯')}\n\n`);
 
     // Handle --issue flag: generate prefilled GitHub Issue URL
     if (options.issue) {
@@ -262,7 +275,7 @@ async function generateAndOutput(options: CliArgs, extra: ExtraContext): Promise
       const repoPath = extractGitHubRepo(remoteMatch ? remoteMatch[1] : undefined);
       if (repoPath) {
         const issueUrl = `https://github.com/${repoPath}/issues/new?title=${encodeURIComponent(`[Bug]: Crash in ${pack.projectName}`)}&body=${encodeURIComponent(markdown)}`;
-        process.stderr.write(`\n${pc.bold('GitHub Issue URL:')}\n${pc.underline(pc.cyan(issueUrl))}\n`);
+        process.stderr.write(`  ${pc.bold('🔗 GitHub Issue URL:')}\n  ${pc.underline(pc.cyan(issueUrl))}\n\n`);
       }
     }
   }

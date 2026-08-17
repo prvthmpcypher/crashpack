@@ -4,21 +4,24 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>crashpack — Everything your bug report needs, in one command</title>
-  <meta name="description" content="Local-first, zero-config crash context collector for developers. Collects logs, git diffs, system info, packages, docker status, and ports with mandatory secret redaction.">
+  <meta name="description" content="Local-first, zero-config crash context collector for developers. Built by Poorvith. Collects logs, git diffs, system info, packages, docker status, and ports with mandatory secret redaction.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400..700;1,9..40,400..700&family=JetBrains+Mono:ital,wght@0,400..700;1,400..700&family=Playfair+Display:ital,wght@0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <!-- HEADER -->
   <header class="header">
     <div class="container header-container">
       <div class="logo">
-        <span class="logo-accent">⚡</span> crashpack
+        <span class="logo-icon">⚡</span>
+        <span class="logo-text">crashpack</span>
+        <span class="version-tag">v0.1.2</span>
       </div>
       <nav class="nav">
+        <a href="#simulator">Live Demo</a>
         <a href="#features">Features</a>
-        <a href="#how-it-works">How It Works</a>
         <a href="#security">Security</a>
         <a href="https://github.com/prvthmpcypher/crashpack" class="btn btn-secondary" target="_blank" rel="noopener">GitHub</a>
       </nav>
@@ -30,188 +33,303 @@
     <section class="hero">
       <div class="container">
         <div class="hero-badge">
-          <span class="badge-dot"></span> Zero network calls. Local-first.
+          <span class="badge-pulse"></span>
+          <span>Zero network calls · 100% Local-first</span>
         </div>
-        <h1 class="hero-title">Everything your bug report needs, <span class="text-amber">in one command.</span></h1>
+        <h1 class="hero-title">
+          Everything your bug report needs, <br><span class="text-emerald">in one command.</span>
+        </h1>
         <p class="hero-subtitle">
-          When something breaks in local dev, stop spending ten minutes gathering logs, git diffs, and package versions. Run <code>crashpack</code> to produce a clean, 100% secret-redacted markdown report you can paste directly into GitHub, Slack, or your AI coding agent.
+          When local dev crashes, stop manually hunting for logs, git commits, package versions, and system specs. Run <code>crashpack</code> to capture a clean, secret-redacted markdown report copied directly to your clipboard.
         </p>
 
         <div class="hero-actions">
           <div class="install-pill">
-            <code>npx crashpack</code>
-            <button class="copy-btn" id="copyInstallBtn" aria-label="Copy install command">Copy</button>
+            <span class="pill-prefix">$</span>
+            <code id="installCmd">npx crashpack</code>
+            <button class="copy-btn" id="copyInstallBtn" aria-label="Copy install command">
+              <span class="btn-copy-text">Copy</span>
+            </button>
           </div>
-          <a href="#features" class="btn btn-primary">Explore Features</a>
+          <a href="#simulator" class="btn btn-primary">Try Interactive Demo</a>
         </div>
 
-        <!-- HERO MARKDOWN PREVIEW (THE PRODUCT) -->
-        <div class="markdown-preview-card">
-          <div class="preview-header">
-            <div class="preview-dots">
-              <span class="dot red"></span>
-              <span class="dot yellow"></span>
-              <span class="dot green"></span>
-            </div>
-            <div class="preview-title">crashpack · output.md</div>
-            <div class="preview-badge">Copied to clipboard</div>
+        <div class="author-badge">
+          <span>Crafted by <strong>Poorvith M P</strong> (@prvthmpcypher)</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- LIVE INTERACTIVE TERMINAL & REPORT SIMULATOR -->
+    <section class="section" id="simulator">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">See It in Action</h2>
+          <p class="section-subtitle">Experience the instant scanning and pass-through redaction.</p>
+        </div>
+
+        <div class="simulator-wrapper">
+          <div class="simulator-tabs">
+            <button class="tab-btn active" id="tabTerminalBtn">Terminal Live View</button>
+            <button class="tab-btn" id="tabMarkdownBtn">Generated Markdown Output</button>
+            <button class="action-run-btn" id="runDemoBtn">▶ Run Simulation</button>
           </div>
-          <div class="preview-content">
-            <pre><code><span class="md-h1"># crashpack · payment-service</span>
-<span class="md-meta">_2026-08-17 14:22 UTC · collected in 1.1s · 4 values redacted_</span>
+
+          <!-- TERMINAL VIEW -->
+          <div class="terminal-card" id="terminalView">
+            <div class="window-bar">
+              <div class="window-dots">
+                <span class="dot red"></span>
+                <span class="dot yellow"></span>
+                <span class="dot green"></span>
+              </div>
+              <div class="window-title">bash — crashpack (interactive simulation)</div>
+              <div class="window-status" id="terminalStatus">Ready</div>
+            </div>
+            <div class="terminal-body" id="terminalOutput">
+<span class="t-dim">$ </span><span class="t-cmd">npx crashpack --wrap "npm run dev"</span>
+
+<span class="t-cyan">╭──────────────────────────────────────────────────────────╮</span>
+<span class="t-cyan">│</span>  <span class="t-yellow">⚡ crashpack</span> <span class="t-dim">v0.1.2</span>                                    <span class="t-cyan">│</span>
+<span class="t-cyan">│</span>  <span class="t-dim">Zero-config crash context collector</span>                     <span class="t-cyan">│</span>
+<span class="t-cyan">│</span>  <span class="t-purple">Built by Poorvith</span> <span class="t-dim">(@prvthmpcypher)</span>                      <span class="t-cyan">│</span>
+<span class="t-cyan">╰──────────────────────────────────────────────────────────╯</span>
+
+  <span class="t-green">✓</span> <span class="t-bold">logs     </span> <span class="t-dim">ready (captured 14 error lines)</span>
+  <span class="t-green">✓</span> <span class="t-bold">git      </span> <span class="t-dim">ready (main · 3 commits · 2 dirty files)</span>
+  <span class="t-green">✓</span> <span class="t-bold">system   </span> <span class="t-dim">ready (Node v24 · 4 cores · 1.2 GB free)</span>
+  <span class="t-green">✓</span> <span class="t-bold">runtimes </span> <span class="t-dim">ready (Node, Python, pnpm)</span>
+  <span class="t-green">✓</span> <span class="t-bold">packages </span> <span class="t-dim">ready (18 dependencies loaded)</span>
+  <span class="t-dim">- docker    (not running — skipped)</span>
+  <span class="t-green">✓</span> <span class="t-bold">ports    </span> <span class="t-dim">ready (scanned standard dev ports)</span>
+  <span class="t-green">✓</span> <span class="t-bold">env      </span> <span class="t-dim">ready (4 keys listed, values redacted)</span>
+
+<span class="t-cyan">╭──────────────────────────────────────────────────────────────────────────╮</span>
+<span class="t-cyan">│</span>  <span class="t-green">📋 COPIED TO CLIPBOARD!</span> <span class="t-dim">Paste directly into GitHub / Slack / AI</span>
+<span class="t-cyan">│</span>
+<span class="t-cyan">│</span>  <span class="t-emerald">🛡️  Zero sensitive leaks detected (diffs & logs verified safe)</span>
+<span class="t-cyan">│</span>  <span class="t-dim">📁 Backup file:</span> <span class="t-cyan">/tmp/crashpack-2026-08-17T14-22.md</span>
+<span class="t-cyan">│</span>  <span class="t-dim">⚡</span> <span class="t-purple">Built by Poorvith</span> <span class="t-dim">· 100% local-first (0 network calls)</span>
+<span class="t-cyan">╰──────────────────────────────────────────────────────────────────────────╯</span>
+            </div>
+          </div>
+
+          <!-- MARKDOWN VIEW -->
+          <div class="terminal-card hidden" id="markdownView">
+            <div class="window-bar">
+              <div class="window-dots">
+                <span class="dot red"></span>
+                <span class="dot yellow"></span>
+                <span class="dot green"></span>
+              </div>
+              <div class="window-title">crashpack · output.md (Clipboard payload)</div>
+              <div class="window-badge-success">Ready to paste</div>
+            </div>
+            <div class="markdown-body">
+              <pre><code><span class="md-h1"># crashpack · payment-service</span>
+<span class="md-meta">_2026-08-17 14:22 UTC · collected in 1.1s · 0 values redacted_</span>
 
 <span class="md-h2">## Logs</span>
-<span class="md-text">[last 200 lines, redacted]</span>
 <span class="md-red">Error: StripeInvalidRequestError: No such customer: 'cus_9999'</span>
-<span class="md-text">    at StripeAPI.request (/app/node_modules/stripe/lib/StripeResource.js:213)</span>
+    at StripeAPI.request (/app/node_modules/stripe/lib/StripeResource.js:213)
+    at async createCheckout (/app/src/checkout.ts:44)
 
 <span class="md-h2">## Git</span>
-<span class="md-list">- Branch: `feat/checkout-redesign`</span>
-<span class="md-list">- Remote: `github.com/company/payment-service`</span>
-<span class="md-list">- Uncommitted changes: 3 files</span>
+- Branch: `main`
+- Remote: `https://github.com/prvthmpcypher/payment-service`
+- Uncommitted changes: 2 files
 
 <span class="md-bold">**Last 3 commits**</span>
-<span class="md-list">- `a1b2c3d` fix: handle null customer — 2 hours ago</span>
-<span class="md-list">- `d4e5f6a` feat: add webhook handler — 1 day ago</span>
-<span class="md-list">- `b7c8d9e` chore: bump dependencies — 2 days ago</span>
+- `8a03ed8` fix(checkout): handle customer edge cases — 2 hours ago
+- `fb10ac8` feat(api): add stripe webhook handler — 1 day ago
+- `2de20bc` chore: bump dependencies — 2 days ago
 
 <span class="md-bold">**Diff**</span>
-<span class="md-diff-add">+ const customerId = session.metadata.customer_id;</span>
-<span class="md-diff-sub">- const customerId = session.customer;</span>
+```diff
++ const customerId = session.metadata.customer_id;
+- const customerId = session.customer;
+```
 
 <span class="md-h2">## System</span>
 | | |
 |---|---|
-| OS | macOS 14.5 (arm64) |
-| CPU | Apple M2, 8 cores |
-| Memory | 4.2 GB free of 16 GB |
-| Disk | 82 GB free of 494 GB |
+| OS | Windows 10.0.19045 (x64) |
+| CPU | 4 cores |
+| Memory | 1.2 GB free of 16 GB |
+| Disk | 42 GB free of 256 GB |
 
 <span class="md-h2">## Runtimes</span>
-<span class="md-list">- Node `20.11.0`</span>
-<span class="md-list">- Python `3.11.7`</span>
-
-<span class="md-h2">## Packages</span>
-| Package | Version |
-|---|---|
-| next | 15.0.3 |
-| react | 19.0.0 |
-| stripe | 14.14.0 |
-<span class="md-meta">_...and 42 more_</span>
-
-<span class="md-h2">## Docker</span>
-<span class="md-list">- Daemon: running</span>
-<span class="md-list">- `postgres` — up 2 hours (healthy)</span>
-<span class="md-list">- `redis` — exited (137) 4 minutes ago  <span class="md-warn">← likely relevant</span></span>
-
-<span class="md-h2">## Ports</span>
-<span class="md-list">- `3000` — node (pid 48213)</span>
-<span class="md-list">- `5432` — postgres</span>
+- Node `24.18.0`
+- Python `3.14.6`
+- pnpm `11.22.0`
 
 <span class="md-h2">## Environment</span>
-<span class="md-meta">_8 keys present. Values redacted. Keys: DATABASE_URL, NEXT_PUBLIC_API_URL, STRIPE_SECRET_KEY, ..._</span>
+<span class="md-meta">_4 keys present. Values redacted. Keys: DATABASE_URL, NEXT_PUBLIC_API_URL, STRIPE_SECRET_KEY, SUPABASE_KEY_</span>
 
 ---
-<span class="md-footer">_Generated by crashpack. No data left this machine._</span></code></pre>
+<span class="md-footer">_Generated by crashpack · Built by Poorvith. No data left this machine._</span></code></pre>
+            </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- CORE WORKFLOW MODES -->
-    <section class="section" id="how-it-works">
+    <!-- THREE WORKFLOWS -->
+    <section class="section" id="workflows">
       <div class="container">
-        <h2 class="section-title">Three Frictionless Workflows</h2>
-        <p class="section-subtitle">Designed for real-world developer terminal workflows.</p>
+        <div class="section-header">
+          <h2 class="section-title">Three Frictionless Workflows</h2>
+          <p class="section-subtitle">Designed to fit naturally into everyday dev routines.</p>
+        </div>
 
         <div class="grid grid-3">
           <div class="card">
             <div class="card-icon">⚡</div>
             <h3 class="card-title">Instant Post-Mortem</h3>
-            <p class="card-text">Run right after a crash. Captures git diffs, runtime versions, packages, docker containers, and system state.</p>
-            <div class="code-snippet"><code>$ npx crashpack</code></div>
+            <p class="card-text">Run right after a crash. Inspects git state, packages, runtimes, and open ports in under 2 seconds.</p>
+            <div class="code-box"><code>npx crashpack</code></div>
           </div>
 
           <div class="card">
             <div class="card-icon">🎯</div>
             <h3 class="card-title">Command Wrapper</h3>
-            <p class="card-text">Runs your command live. If it exits with 0, nothing extra is printed. On non-zero exit, it captures logs + full context.</p>
-            <div class="code-snippet"><code>$ crashpack --wrap "npm run dev"</code></div>
+            <p class="card-text">Streams output live. If your command passes (exit 0), nothing is printed. On non-zero exit, captures error logs + full context.</p>
+            <div class="code-box"><code>crashpack --wrap "npm test"</code></div>
           </div>
 
           <div class="card">
-            <div class="card-icon">🚰</div>
-            <h3 class="card-title">Piped Log Stream</h3>
-            <p class="card-text">Pipe any failing build or script directly into crashpack to combine stdout/stderr with environment state.</p>
-            <div class="code-snippet"><code>$ npm test 2>&1 | crashpack --stdin</code></div>
+            <div class="card-icon">🔗</div>
+            <h3 class="card-title">GitHub Issue Link</h3>
+            <p class="card-text">Pass <code>--issue</code> to generate a one-click GitHub issue creation URL preloaded with the redacted diagnostic markdown.</p>
+            <div class="code-box"><code>crashpack --issue</code></div>
           </div>
         </div>
       </div>
     </section>
 
     <!-- SECURITY GUARANTEE -->
-    <section class="section security-section" id="security">
+    <section class="section" id="security">
       <div class="container">
         <div class="security-card">
-          <div class="security-badge">🛡️ Zero Leaks · Local Only</div>
+          <div class="security-badge">🛡️ Zero Secrets Leaked · Local Only</div>
           <h2 class="security-title">Mandatory Pass-Through Redaction</h2>
           <p class="security-desc">
-            Redaction is not an optional end step. Every single collector returns raw text that MUST pass through the redaction engine before reaching output or clipboard.
+            Redaction is not an afterthought. Built with TypeScript branded types so unredacted raw collector text cannot physically reach output sinks.
           </p>
-          <ul class="security-list">
-            <li><strong>AWS, Stripe, GitHub Tokens & Private Keys:</strong> Masked automatically based on gitleaks pattern definitions.</li>
-            <li><strong>Database Credentials & Connection Strings:</strong> Passwords inside URI strings are masked (e.g. <code>postgres://user:[redacted]@host</code>).</li>
-            <li><strong>Environment Variables:</strong> Only key names are listed. Values are NEVER read, stored, or output.</li>
-            <li><strong>Zero Outbound Network Calls:</strong> No analytics, no telemetry, no cloud uploads. Everything stays on your machine.</li>
-          </ul>
-        </div>
-      </div>
-    </section>
-
-    <!-- FEATURES OVERVIEW -->
-    <section class="section" id="features">
-      <div class="container">
-        <h2 class="section-title">Built for Speed and Accuracy</h2>
-        <div class="grid grid-2">
-          <div class="feature-item">
-            <h4>⏱️ Sub-2-Second Execution</h4>
-            <p>Runs all collectors concurrently with a strict 2-second timeout per probe. Never blocks or hangs your terminal.</p>
-          </div>
-          <div class="feature-item">
-            <h4>📋 Clipboard + Temp File</h4>
-            <p>Copies straight to clipboard by default, saving a timestamped file outside your repository to prevent accidental git commits.</p>
-          </div>
-          <div class="feature-item">
-            <h4>📦 Manifest & Lockfile Parsing</h4>
-            <p>Parses Node (package.json), Python (requirements.txt, pyproject.toml), Rust (Cargo.toml), and Go (go.mod) with clean truncation.</p>
-          </div>
-          <div class="feature-item">
-            <h4>🤖 AI-Ready Context</h4>
-            <p>Feed the generated markdown directly to Claude, Cursor, ChatGPT, or Antigravity to give agents full diagnostic context in one paste.</p>
+          <div class="security-grid">
+            <div class="sec-item">
+              <h4>🔑 Comprehensive Token Patterns</h4>
+              <p>Masks AWS, Stripe, GitHub PATs, JWTs, and private keys automatically based on Gitleaks pattern sets.</p>
+            </div>
+            <div class="sec-item">
+              <h4>🗄️ Database URI Sanitization</h4>
+              <p>Detects database connection strings and strips passwords (<code>postgres://user:[redacted]@host</code>).</p>
+            </div>
+            <div class="sec-item">
+              <h4>🔒 Environment Variables</h4>
+              <p>Lists variable names only. Actual secret values are never read, stored, or output.</p>
+            </div>
+            <div class="sec-item">
+              <h4>🚫 Zero Network Calls</h4>
+              <p>No telemetry, no tracking, and no cloud uploads. 100% offline-ready.</p>
+            </div>
           </div>
         </div>
       </div>
     </section>
   </main>
 
+  <!-- FOOTER -->
   <footer class="footer">
     <div class="container footer-container">
-      <div>crashpack · MIT License · Created by Poorvith M P</div>
-      <div><a href="https://github.com/prvthmpcypher/crashpack" target="_blank" rel="noopener">GitHub</a></div>
+      <div class="footer-left">
+        <span class="footer-brand">⚡ crashpack</span>
+        <span class="footer-dot">·</span>
+        <span>Built by <a href="https://github.com/prvthmpcypher" target="_blank" rel="noopener">Poorvith M P</a></span>
+      </div>
+      <div class="footer-right">
+        <a href="https://www.npmjs.com/package/crashpack" target="_blank" rel="noopener">npm</a>
+        <a href="https://github.com/prvthmpcypher/crashpack" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://github.com/prvthmpcypher/crashpack/blob/main/LICENSE" target="_blank" rel="noopener">MIT License</a>
+      </div>
     </div>
   </footer>
 
   <script>
+    // Copy install button
     const copyBtn = document.getElementById('copyInstallBtn');
-    if (copyBtn) {
-      copyBtn.addEventListener('click', () => {
-        navigator.clipboard.writeText('npx crashpack');
-        copyBtn.textContent = 'Copied!';
-        setTimeout(() => {
-          copyBtn.textContent = 'Copy';
-        }, 2000);
-      });
-    }
+    const copyText = copyBtn.querySelector('.btn-copy-text');
+    copyBtn.addEventListener('click', async () => {
+      await navigator.clipboard.writeText('npx crashpack');
+      copyText.textContent = 'Copied!';
+      copyBtn.classList.add('copied');
+      setTimeout(() => {
+        copyText.textContent = 'Copy';
+        copyBtn.classList.remove('copied');
+      }, 2000);
+    });
+
+    // Tab switching
+    const tabTerminal = document.getElementById('tabTerminalBtn');
+    const tabMarkdown = document.getElementById('tabMarkdownBtn');
+    const terminalView = document.getElementById('terminalView');
+    const markdownView = document.getElementById('markdownView');
+
+    tabTerminal.addEventListener('click', () => {
+      tabTerminal.classList.add('active');
+      tabMarkdown.classList.remove('active');
+      terminalView.classList.remove('hidden');
+      markdownView.classList.add('hidden');
+    });
+
+    tabMarkdown.addEventListener('click', () => {
+      tabMarkdown.classList.add('active');
+      tabTerminal.classList.remove('active');
+      markdownView.classList.remove('hidden');
+      terminalView.classList.add('hidden');
+    });
+
+    // Interactive Demo Simulation
+    const runDemoBtn = document.getElementById('runDemoBtn');
+    const terminalStatus = document.getElementById('terminalStatus');
+    const terminalOutput = document.getElementById('terminalOutput');
+
+    runDemoBtn.addEventListener('click', () => {
+      tabTerminal.click();
+      runDemoBtn.disabled = true;
+      runDemoBtn.textContent = 'Scanning...';
+      terminalStatus.textContent = 'Collecting';
+      terminalStatus.className = 'window-status collecting';
+
+      const steps = [
+        `\n<span class="t-cyan">╭──────────────────────────────────────────────────────────╮</span>\n<span class="t-cyan">│</span>  <span class="t-yellow">⚡ crashpack</span> <span class="t-dim">v0.1.2</span>                                    <span class="t-cyan">│</span>\n<span class="t-cyan">│</span>  <span class="t-dim">Zero-config crash context collector</span>                     <span class="t-cyan">│</span>\n<span class="t-cyan">│</span>  <span class="t-purple">Built by Poorvith</span> <span class="t-dim">(@prvthmpcypher)</span>                      <span class="t-cyan">│</span>\n<span class="t-cyan">╰──────────────────────────────────────────────────────────╯</span>\n\n  <span class="t-yellow">●</span> <span class="t-dim">Scanning debug context across subsystems…</span>\n`,
+        `  <span class="t-green">✓</span> <span class="t-bold">logs     </span> <span class="t-dim">ready</span>\n`,
+        `  <span class="t-green">✓</span> <span class="t-bold">git      </span> <span class="t-dim">ready</span>\n`,
+        `  <span class="t-green">✓</span> <span class="t-bold">system   </span> <span class="t-dim">ready</span>\n`,
+        `  <span class="t-green">✓</span> <span class="t-bold">runtimes </span> <span class="t-dim">ready</span>\n`,
+        `  <span class="t-green">✓</span> <span class="t-bold">packages </span> <span class="t-dim">ready</span>\n`,
+        `  <span class="t-dim">- docker    (docker not installed)</span>\n`,
+        `  <span class="t-green">✓</span> <span class="t-bold">ports    </span> <span class="t-dim">ready</span>\n`,
+        `  <span class="t-green">✓</span> <span class="t-bold">env      </span> <span class="t-dim">ready (4 keys masked)</span>\n\n`,
+        `<span class="t-cyan">╭──────────────────────────────────────────────────────────────────────────╮</span>\n<span class="t-cyan">│</span>  <span class="t-green">📋 COPIED TO CLIPBOARD!</span> <span class="t-dim">Paste directly into GitHub / Slack / AI</span>\n<span class="t-cyan">│</span>\n<span class="t-cyan">│</span>  <span class="t-emerald">🛡️  Zero sensitive leaks detected (diffs & logs verified safe)</span>\n<span class="t-cyan">│</span>  <span class="t-dim">📁 Backup file:</span> <span class="t-cyan">/tmp/crashpack-live.md</span>\n<span class="t-cyan">│</span>  <span class="t-dim">⚡</span> <span class="t-purple">Built by Poorvith</span> <span class="t-dim">· 100% local-first (0 network calls)</span>\n<span class="t-cyan">╰──────────────────────────────────────────────────────────────────────────╯</span>`
+      ];
+
+      terminalOutput.innerHTML = `<span class="t-dim">$ </span><span class="t-cmd">npx crashpack</span>\n`;
+      let currentStep = 0;
+
+      const interval = setInterval(() => {
+        if (currentStep < steps.length) {
+          terminalOutput.innerHTML += steps[currentStep];
+          currentStep++;
+        } else {
+          clearInterval(interval);
+          runDemoBtn.disabled = false;
+          runDemoBtn.textContent = '▶ Re-run Simulation';
+          terminalStatus.textContent = 'Copied to Clipboard!';
+          terminalStatus.className = 'window-status success';
+        }
+      }, 150);
+    });
   </script>
 </body>
 </html>
