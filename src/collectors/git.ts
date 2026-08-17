@@ -1,0 +1,127 @@
+import { execa } from 'execa';
+import { asRawText, Collector, CollectorResult } from '../types.js';
+
+export const collectGit: Collector = async (ctx) => {
+  const timeout = ctx.timeoutMs ?? 2000;
+  const cwd = ctx.cwd;
+
+  try {
+    // Check if inside git work tree
+    const isRepo = await execa('git', ['rev-parse', '--is-inside-work-tree'], {
+      cwd,
+      timeout,
+      reject: false,
+    });
+
+    if (isRepo.exitCode !== 0 || isRepo.stdout.trim() !== 'true') {
+      return {
+        id: 'git',
+        title: 'Git',
+        status: 'unavailable',
+        unavailableReason: 'not a git repository',
+      };
+    }
+
+    // Branch
+    let branch = 'unknown';
+    const branchRes = await execa('git', ['rev-parse', '--abbrev-ref', 'HEAD'], {
+      cwd,
+      timeout,
+      reject: false,
+    });
+    if (branchRes.exitCode === 0 && branchRes.stdout.trim()) {
+      branch = branchRes.stdout.trim();
+    }
+
+    // Remote
+    let remote = 'none';
+    const remoteRes = await execa('git', ['config', '--get', 'remote.origin.url'], {
+      cwd,
+      timeout,
+      reject: false,
+    });
+    if (remoteRes.exitCode === 0 && remoteRes.stdout.trim()) {
+      remote = remoteRes.stdout.trim();
+      // Clean git@ URLs or https:// tokens if any
+      remote = remote.replace(/^git@([^:]+):/, '$1/').replace(/\.git$/, '');
+    }
+
+    // Uncommitted files
+    const statusRes = await execa('git', ['status', '--porcelain'], {
+      cwd,
+      timeout,
+      reject: false,
+    });
+    const statusLines = statusRes.exitCode === 0 && statusRes.stdout.trim()
+      ? statusRes.stdout.trim().split('\n').filter(Boolean)
+      : [];
+    const uncommittedCount = statusLines.length;
+
+    // Last 3 commits
+    let commitsSection = '';
+    const logRes = await execa('git', ['log', '-n', '3', '--format=- `%h` %s — %cr'], {
+      cwd,
+      timeout,
+      reject: false,
+    });
+    if (logRes.exitCode === 0 && logRes.stdout.trim()) {
+      commitsSection = `**Last 3 commits**\n${logRes.stdout.trim()}`;
+    } else {
+      commitsSection = `**Last 3 commits**\n- No commits yet`;
+    }
+
+    // Diff
+    let diffSection = '';
+    const diffRes = await execa('git', ['diff', 'HEAD'], {
+      cwd,
+      timeout,
+      reject: false,
+    });
+    
+    let diffOutput = diffRes.exitCode === 0 ? diffRes.stdout : '';
+    // If diff HEAD failed (e.g. initial commit with no HEAD), try git diff
+    if (diffRes.exitCode !== 0) {
+      const fallbackDiff = await execa('git', ['diff'], { cwd, timeout, reject: false });
+      if (fallbackDiff.exitCode === 0) {
+        diffOutput = fallbackDiff.stdout;
+      }
+    }
+
+    if (diffOutput.trim()) {
+      const diffLines = diffOutput.split('\n');
+      let truncated = false;
+      let finalDiff = diffLines;
+      if (diffLines.length > 500) {
+        finalDiff = diffLines.slice(0, 500);
+        truncated = true;
+      }
+      diffSection = `\n\n**Diff**\n\`\`\`diff\n${finalDiff.join('\n')}${truncated ? '\n... [diff truncated at 500 lines]' : ''}\n\`\`\``;
+    }
+
+    const lines: string[] = [
+      `- Branch: \`${branch}\``,
+      `- Remote: \`${remote}\``,
+      `- Uncommitted changes: ${uncommittedCount} file${uncommittedCount === 1 ? '' : 's'}`,
+      '',
+      commitsSection,
+    ];
+
+    if (diffSection) {
+      lines.push(diffSection);
+    }
+
+    return {
+      id: 'git',
+      title: 'Git',
+      status: 'ok',
+      rawContent: asRawText(lines.join('\n')),
+    };
+  } catch (err: any) {
+    return {
+      id: 'git',
+      title: 'Git',
+      status: 'unavailable',
+      unavailableReason: err?.message || 'git command failed',
+    };
+  }
+};
