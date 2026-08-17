@@ -55,6 +55,7 @@ export interface CollectorContext {
   cwd: string;
   timeoutMs?: number;
   lines?: number;
+  since?: string;
   stdinLog?: string;
   wrapBuffer?: string;
 }
@@ -82,6 +83,8 @@ export interface CliOptions {
   json?: boolean;
   clipboard?: boolean;
   lines?: string;
+  since?: string;
+  issue?: boolean;
   only?: string;
   skip?: string;
   redactExtra?: string[];

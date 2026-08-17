@@ -25,6 +25,7 @@ export interface RunCollectorOptions {
   cwd?: string;
   timeoutMs?: number;
   lines?: number;
+  since?: string;
   stdinLog?: string;
   wrapBuffer?: string;
   only?: string[];
@@ -65,6 +66,7 @@ export async function createCrashPack(options: RunCollectorOptions = {}): Promis
     cwd,
     timeoutMs: options.timeoutMs ?? 2000,
     lines: options.lines ?? 200,
+    since: options.since,
     stdinLog: options.stdinLog,
     wrapBuffer: options.wrapBuffer,
   };

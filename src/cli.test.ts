@@ -55,4 +55,18 @@ describe('CLI & Orchestration', () => {
     expect(logSection?.status).toBe('ok');
     expect(logSection?.content).toContain('Unhandled exception');
   });
+
+  it('passes --since parameter to git collector', async () => {
+    const pack = await createCrashPack({
+      cwd: process.cwd(),
+      since: '1d',
+      only: ['git'],
+    });
+
+    const gitSection = pack.sections.find((s) => s.id === 'git');
+    expect(gitSection).toBeDefined();
+    if (gitSection?.status === 'ok') {
+      expect(gitSection.content).toContain('Commits since 1d');
+    }
+  });
 });

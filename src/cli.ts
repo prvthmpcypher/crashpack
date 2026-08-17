@@ -16,6 +16,8 @@ interface CliArgs {
   json?: boolean;
   clipboard?: boolean;
   lines?: string;
+  since?: string;
+  issue?: boolean;
   only?: string;
   skip?: string;
   redactExtra?: string[];
@@ -57,13 +59,22 @@ function parseRegexPattern(pattern: string): RegExp | null {
   }
 }
 
+function extractGitHubRepo(remoteUrl?: string): string | null {
+  if (!remoteUrl) return null;
+  const match = remoteUrl.match(/github\.com[/:]([A-Za-z0-9_.-]+)\/([A-Za-z0-9_.-]+?)(?:\.git|\/|$)/);
+  if (match && match[1] && match[2]) {
+    return `${match[1]}/${match[2]}`;
+  }
+  return null;
+}
+
 export async function runCli(argv = process.argv): Promise<number> {
   const program = new Command();
 
   program
     .name('crashpack')
     .description('Everything your bug report needs, in one command.')
-    .version('0.1.0')
+    .version('0.1.1')
     .option('--wrap <command>', 'Run a command, stream live, and capture crash context on non-zero exit')
     .option('--stdin', 'Read piped input as the log section')
     .option('--out <path>', 'Write output to a specific file instead of temp')
@@ -71,6 +82,8 @@ export async function runCli(argv = process.argv): Promise<number> {
     .option('--json', 'Emit the raw CrashPack JSON object')
     .option('--no-clipboard', 'Skip copying to clipboard')
     .option('--lines <n>', 'Number of log lines to capture (default 200)', '200')
+    .option('--since <duration>', 'Filter git commits and logs since duration (e.g. 1h, 1d)')
+    .option('--issue', 'Generate GitHub issue pre-fill URL for this repository')
     .option('--only <ids>', 'Comma-separated collector IDs to run')
     .option('--skip <ids>', 'Comma-separated collector IDs to skip')
     .option('--redact-extra <pattern...>', 'Additional regex pattern(s) to redact');
@@ -164,6 +177,7 @@ async function generateAndOutput(options: CliArgs, extra: ExtraContext): Promise
   const pack = await createCrashPack({
     cwd: process.cwd(),
     lines: lineLimit,
+    since: options.since,
     stdinLog: extra.stdinLog,
     wrapBuffer: extra.wrapBuffer,
     only: onlyList,
@@ -186,7 +200,6 @@ async function generateAndOutput(options: CliArgs, extra: ExtraContext): Promise
       }
     }
 
-    // Format into columns or clean rows
     process.stderr.write(statusItems.join('\n') + '\n\n');
   }
 
@@ -240,6 +253,18 @@ async function generateAndOutput(options: CliArgs, extra: ExtraContext): Promise
     );
     process.stderr.write(`${clipMsg} ${pc.dim('·')} ${redactMsg}\n`);
     process.stderr.write(`${pc.cyan(outputPath)}\n`);
+
+    // Handle --issue flag: generate prefilled GitHub Issue URL
+    if (options.issue) {
+      const gitSection = pack.sections.find((s) => s.id === 'git');
+      const gitContent = gitSection?.content || '';
+      const remoteMatch = gitContent.match(/Remote:\s*`([^`]+)`/);
+      const repoPath = extractGitHubRepo(remoteMatch ? remoteMatch[1] : undefined);
+      if (repoPath) {
+        const issueUrl = `https://github.com/${repoPath}/issues/new?title=${encodeURIComponent(`[Bug]: Crash in ${pack.projectName}`)}&body=${encodeURIComponent(markdown)}`;
+        process.stderr.write(`\n${pc.bold('GitHub Issue URL:')}\n${pc.underline(pc.cyan(issueUrl))}\n`);
+      }
+    }
   }
 
   return extra.exitCode ?? 0;

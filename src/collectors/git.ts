@@ -57,17 +57,23 @@ export const collectGit: Collector = async (ctx) => {
       : [];
     const uncommittedCount = statusLines.length;
 
-    // Last 3 commits
+    // Commits (support --since if provided)
     let commitsSection = '';
-    const logRes = await execa('git', ['log', '-n', '3', '--format=- `%h` %s — %cr'], {
+    const logArgs = ctx.since
+      ? ['log', '-n', '10', `--since=${ctx.since}`, '--format=- `%h` %s — %cr']
+      : ['log', '-n', '3', '--format=- `%h` %s — %cr'];
+
+    const logRes = await execa('git', logArgs, {
       cwd,
       timeout,
       reject: false,
     });
+
+    const commitLabel = ctx.since ? `**Commits since ${ctx.since}**` : `**Last 3 commits**`;
     if (logRes.exitCode === 0 && logRes.stdout.trim()) {
-      commitsSection = `**Last 3 commits**\n${logRes.stdout.trim()}`;
+      commitsSection = `${commitLabel}\n${logRes.stdout.trim()}`;
     } else {
-      commitsSection = `**Last 3 commits**\n- No commits yet`;
+      commitsSection = `${commitLabel}\n- No commits found`;
     }
 
     // Diff
