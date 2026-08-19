@@ -26,11 +26,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/prvthmpcypher/crashpack.git"
+    "url": "git+https://github.com/poorvith-mp/crashpack.git"
   },
-  "homepage": "https://github.com/prvthmpcypher/crashpack#readme",
+  "homepage": "https://github.com/poorvith-mp/crashpack#readme",
   "bugs": {
-    "url": "https://github.com/prvthmpcypher/crashpack/issues"
+    "url": "https://github.com/poorvith-mp/crashpack/issues"
   },
   "scripts": {
     "build": "tsup",

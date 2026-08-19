@@ -178,4 +178,4 @@ npm run build
 
 ## License
 
-[MIT](LICENSE) © [Poorvith M P](https://github.com/prvthmpcypher)
+[MIT](LICENSE) © [Poorvith M P](https://github.com/poorvith-mp)

@@ -38,7 +38,7 @@ If you discover a security vulnerability, architectural bypass, or an unmasked c
 Instead, please report it privately:
 
 - **Email:** [poorvith007@proton.me](mailto:poorvith007@proton.me)
-- **GitHub:** Use [GitHub Private Vulnerability Reporting](https://github.com/prvthmpcypher/crashpack/security/advisories/new) on the repository.
+- **GitHub:** Use [GitHub Private Vulnerability Reporting](https://github.com/poorvith-mp/crashpack/security/advisories/new) on the repository.
 
 ### What to Include
 - A description of the issue or unmasked pattern format.

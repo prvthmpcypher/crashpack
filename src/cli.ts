@@ -172,7 +172,7 @@ async function generateAndOutput(options: CliArgs, extra: ExtraContext): Promise
     process.stderr.write(`\n${pc.cyan('╭──────────────────────────────────────────────────────────╮')}\n`);
     process.stderr.write(`${pc.cyan('│')}  ${pc.bold(pc.yellow('⚡ crashpack'))} ${pc.dim('v0.1.2')}                                    ${pc.cyan('│')}\n`);
     process.stderr.write(`${pc.cyan('│')}  ${pc.dim('Zero-config crash context collector')}                     ${pc.cyan('│')}\n`);
-    process.stderr.write(`${pc.cyan('│')}  ${pc.magenta('Built by Poorvith')} ${pc.dim('(@prvthmpcypher)')}                      ${pc.cyan('│')}\n`);
+    process.stderr.write(`${pc.cyan('│')}  ${pc.magenta('Built by Poorvith')} ${pc.dim('(@poorvith-mp)')}                      ${pc.cyan('│')}\n`);
     process.stderr.write(`${pc.cyan('╰──────────────────────────────────────────────────────────╯')}\n\n`);
     process.stderr.write(`  ${pc.yellow('●')} ${pc.dim('Scanning debug context across subsystems…')}\n\n`);
   }

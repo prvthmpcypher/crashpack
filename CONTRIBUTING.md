@@ -15,7 +15,7 @@ First off, thank you for considering contributing to `crashpack`!
 ### Clone & Install
 
 ```bash
-git clone https://github.com/prvthmpcypher/crashpack.git
+git clone https://github.com/poorvith-mp/crashpack.git
 cd crashpack
 npm install
 ```
